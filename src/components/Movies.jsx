@@ -13,8 +13,22 @@ export class Movies extends Component {
   };
 
   render() {
+    const { length: Count } = this.state.movies;
+
+    if (Count === 0)
+      return (
+        <p className="display-4 ">
+          There are <span className="badge bg-warning">No</span> movie in
+          database
+        </p>
+      );
+
     return (
-      <div>
+      <React.Fragment>
+        <p className="display-4 ">
+          There are <span className="badge bg-info ">{Count}</span> movies in
+          database
+        </p>
         <table className="table">
           <thead>
             <tr>
@@ -44,7 +58,7 @@ export class Movies extends Component {
             ))}
           </tbody>
         </table>
-      </div>
+      </React.Fragment>
     );
   }
 }
