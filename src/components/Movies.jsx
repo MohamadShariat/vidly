@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Like from "./common/Like";
 
 import { getMovies } from "../services/fakeMovieService";
 
@@ -12,22 +13,31 @@ export class Movies extends Component {
     this.setState({ movies });
   };
 
-  render() {
-    const { length: Count } = this.state.movies;
+  handleLike = (movie) => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(movie);
+    movies[index] = { ...movies[index] };
+    movies[index].liked = !movies[index].liked;
+    this.setState({ movies });
+  };
 
-    if (Count === 0)
+  render() {
+    const { length: count } = this.state.movies;
+
+    if (count === 0)
       return (
         <p className="display-4 ">
-          There are <span className="badge bg-warning">No</span> movie in
-          database
+          There Are <span className="badge badge-pill badge-warning">No</span>{" "}
+          Movie In Database
         </p>
       );
 
     return (
       <React.Fragment>
         <p className="display-4 ">
-          There are <span className="badge bg-info ">{Count}</span> movies in
-          database
+          There Are{" "}
+          <span className="badge badge-pill badge-success">{count}</span> Movies
+          In Database
         </p>
         <table className="table">
           <thead>
@@ -36,6 +46,7 @@ export class Movies extends Component {
               <th>Genre</th>
               <th>Stock</th>
               <th>Rate</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>
@@ -46,6 +57,12 @@ export class Movies extends Component {
                 <td>{movie.genre.name}</td>
                 <td>{movie.numberInStock}</td>
                 <td>{movie.dailyRentalRate}</td>
+                <td>
+                  <Like
+                    liked={movie.liked}
+                    onLike={() => this.handleLike(movie)}
+                  />
+                </td>
                 <td>
                   <button
                     onClick={() => this.handleDelete(movie)}
