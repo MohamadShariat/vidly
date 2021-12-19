@@ -16,7 +16,8 @@ export class Movies extends Component {
   };
 
   componentDidMount() {
-    this.setState({ movies: getMovies(), genres: getGenres() });
+    const genres = [{ name: "All Genres" }, ...getGenres()];
+    this.setState({ movies: getMovies(), genres });
   }
 
   handleDelete = (movie) => {
@@ -37,12 +38,17 @@ export class Movies extends Component {
   };
 
   handleGenreSelect = (genre) => {
-    console.log(genre);
+    this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
   render() {
     const { length: count } = this.state.movies;
-    const { pageSize, currentPage, movies: allMovies } = this.state;
+    const {
+      pageSize,
+      currentPage,
+      selectedGenre,
+      movies: allMovies,
+    } = this.state;
 
     if (count === 0)
       return (
@@ -52,22 +58,28 @@ export class Movies extends Component {
         </p>
       );
 
-    const movies = paginate(allMovies, currentPage, pageSize);
+    const filtered =
+      selectedGenre && selectedGenre._id
+        ? allMovies.filter((movie) => movie.genre._id === selectedGenre._id)
+        : allMovies;
+
+    const movies = paginate(filtered, currentPage, pageSize);
 
     return (
       <div className="row">
         <div className="col-3">
           <ListGroup
             items={this.state.genres}
-            textProperty="name"
-            valueProperty="_id"
+            selectedItem={this.state.selectedGenre}
             onItemSelect={this.handleGenreSelect}
           />
         </div>
         <div className="col">
           <p>
             There Are{" "}
-            <span className="badge badge-pill badge-success">{count}</span>{" "}
+            <span className="badge badge-pill badge-success">
+              {filtered.length}
+            </span>{" "}
             Movies In Database
           </p>
           <table className="table">
@@ -107,7 +119,7 @@ export class Movies extends Component {
             </tbody>
           </table>
           <Pagination
-            itemsCount={count}
+            itemsCount={filtered.length}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
