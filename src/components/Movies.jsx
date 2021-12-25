@@ -46,8 +46,7 @@ export class Movies extends Component {
     this.setState({ sortColumn });
   };
 
-  render() {
-    const { length: count } = this.state.movies;
+  getPagedData = () => {
     const {
       pageSize,
       currentPage,
@@ -55,14 +54,6 @@ export class Movies extends Component {
       selectedGenre,
       movies: allMovies,
     } = this.state;
-
-    if (count === 0)
-      return (
-        <p>
-          There Are <span className="badge badge-pill badge-warning">No</span>{" "}
-          Movie In Database
-        </p>
-      );
 
     const filtered =
       selectedGenre && selectedGenre._id
@@ -72,6 +63,23 @@ export class Movies extends Component {
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
     const movies = paginate(sorted, currentPage, pageSize);
+
+    return { totalCount: filtered.length, data: movies };
+  };
+
+  render() {
+    const { length: count } = this.state.movies;
+    const { pageSize, currentPage, sortColumn } = this.state;
+
+    if (count === 0)
+      return (
+        <p>
+          There Are <span className="badge badge-pill badge-warning">No</span>{" "}
+          Movie In Database
+        </p>
+      );
+
+    const { totalCount, data: movies } = this.getPagedData();
 
     return (
       <div className="row">
@@ -85,9 +93,7 @@ export class Movies extends Component {
         <div className="col">
           <p>
             There Are{" "}
-            <span className="badge badge-pill badge-success">
-              {filtered.length}
-            </span>{" "}
+            <span className="badge badge-pill badge-success">{totalCount}</span>{" "}
             Movies In Database
           </p>
           <MoviesTable
@@ -98,7 +104,7 @@ export class Movies extends Component {
             onSort={this.handleSort}
           />
           <Pagination
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
