@@ -1,7 +1,7 @@
 import React from "react";
 
-const Rental = () => {
+const Rentals = () => {
   return <h1>Rental</h1>;
 };
 
-export default Rental;
+export default Rentals;
