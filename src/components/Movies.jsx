@@ -6,6 +6,7 @@ import { paginate } from "../utils/paginate";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 export class Movies extends Component {
   state = {
@@ -91,6 +92,13 @@ export class Movies extends Component {
           />
         </div>
         <div className="col">
+          <Link
+            to="/movies/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+          >
+            New Movie
+          </Link>
           <p>
             There Are{" "}
             <span className="badge badge-pill badge-success">{totalCount}</span>{" "}
